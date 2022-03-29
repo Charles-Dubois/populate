@@ -13,39 +13,33 @@ mongoose
   .then(console.log("connection to mongo DB done !"))
   .catch((err) => console.log(err));
 
-app.get("/address", async (_req, res) => {
+app.get("/", async (_req, res) => {
+  res.json({ message: "API students", post: "/", post: "/student" });
+});
+
+app.post("/", async (req, res) => {
   let addressID;
   try {
-    addressID = await Address.find().select("id");
-    addressID = addressID[0].id;
+    addressID = await Address.create(req.body.address);
+    addressID = addressID.id;
+    req.body.student.address = addressID;
   } catch (err) {
     console.log(err);
     return res.status(400).send("bad request 400");
   }
 
-  res.json(addressID);
-});
-
-app.get("/students", async (_req, res) => {
-  let student;
   try {
-    student = await Student.find();
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send("bad request 400");
-  }
-
-  res.json(student);
-});
-app.post("/students", async (req, res) => {
-  try {
-    await Student.create(req.body);
+    await Student.create(req.body.student);
   } catch (err) {
     console.log(err);
     return res.status(400).send("bad request 400");
   }
 
   res.status(201).json({ message: "created" });
+});
+
+app.post("/student", async (req, res) => {
+  res.send("hello");
 });
 
 app.listen(PORT, () => {
