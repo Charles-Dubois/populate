@@ -39,7 +39,15 @@ app.post("/", async (req, res) => {
 });
 
 app.post("/student", async (req, res) => {
-  res.send("hello");
+  let result;
+  try {
+    result = await Student.findById(req.body.id).populate("address");
+  } catch (err) {
+    console.log(err);
+    return res.send("This Id is not valid");
+  }
+
+  res.json(result);
 });
 
 app.listen(PORT, () => {
